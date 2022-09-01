@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 0
 
       - name: 'SDM Access Granter Client'
-        uses: strongdm/sdm-access-gh-action
+        uses: strongdm/sdm-access-gh-action@v1.0.2
         env:
           RUN_ID: ${{ github.run_id }}
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
