@@ -4,7 +4,21 @@ on:
     branches: [ main ]
   workflow_dispatch:
 jobs:
+  generate-random-key:
+    runs-on: ubuntu-latest
+    outputs:
+      ag-random-key: ${{ steps.ag-random-key-generator.outputs.ag-random-key }}
+    steps:
+      - name: 'Generate Access Granter random key'
+        id: ag-random-key-generator
+        run: |
+          export RANDOM_KEY=$(echo $(python -c "import uuid ; print(uuid.uuid4())"))
+          echo "::set-output name=ag-random-key::$RANDOM_KEY"
+          echo "###random_access_key=$RANDOM_KEY###"
+        shell: bash
+
   grant-access:
+    needs: generate-random-key
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -13,8 +27,10 @@ jobs:
           fetch-depth: 0
 
       - name: 'SDM Access Granter Client'
-        uses: strongdm/sdm-access-gh-action@v1.0.2
-        env:
-          RUN_ID: ${{ github.run_id }}
-          SERVER_HOST: ${{ secrets.SERVER_HOST }}
-          AG_SECRET: ${{ secrets.AG_SECRET }}
+        uses: vassalo/sdm-access-gh-action@v1.0.3
+        with:
+          run-id: ${{ github.run_id }}
+          ag-random-key: ${{ needs.generate-random-key.outputs.ag-random-key }}
+          ag-random-key-job-name: generate-random-key
+          ag-secret: ${{ secrets.AG_SECRET }}
+          server-host: ${{ secrets.SERVER_HOST }}
