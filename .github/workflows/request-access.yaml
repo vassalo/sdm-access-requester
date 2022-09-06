@@ -27,9 +27,8 @@ jobs:
           fetch-depth: 0
 
       - name: 'SDM Access Granter Client'
-        uses: vassalo/sdm-access-gh-action@v1.0.5
+        uses: vassalo/sdm-access-gh-action@v1.0.6
         with:
-          run-id: ${{ github.run_id }}
           ag-random-key: ${{ needs.generate-random-key.outputs.ag-random-key }}
           ag-random-key-job-name: generate-random-key
           ag-secret: ${{ secrets.AG_SECRET }}
